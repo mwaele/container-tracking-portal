@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: container-tracking-portal-server
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: container-tracking-portal
+      DB_USERNAME: root
+      DB_PASSWORD: 
+    networks:
+      - laravel-network
+
+
+  db:
+    image: containertrackingportal.azurecr.io/container-tracking-portal-db
+    container_name: container-tracking-portal-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: container-tracking-portal
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"  # Allow empty root password
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
